@@ -1,0 +1,34 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+h1 {
+  text-align: center;
+}
+
+.form-submit {
+  width: 320px;
+  margin: 0 auto;
+}
+
+.form-row label {
+  display: inline-block;
+  width: 150px;
+}
+
+.form-row input[type=email],
+.form-row input[type=password],
+.form-row input[type=text],
+.form-row input[type=url] {
+  width: 150px;
+}
+
+.form-required label::after {
+  content: '*';
+  color: #F00;
+}

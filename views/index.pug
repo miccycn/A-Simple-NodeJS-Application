@@ -1,0 +1,28 @@
+extends layout
+
+block content
+  h1 Please fill in the following form:
+  form(action="/submit",method="post",class="form-submit",id="form")
+    p(class="form-row form-required")
+      label Name
+      input(name="name", required="required", type="text",aria-label="Name")
+    p(class="form-row form-required")
+      label Email
+      input(type="email",name="email",required="required", aria-label="Email")
+    p(class="form-row form-required")
+      label Password
+      input(type="password", name="password", maxlength=16, required="required",autocomplete="autocomplete",aria-label="Password")
+    p(class="form-row form-required")
+      label HomePage URL
+      input(type="url", name="url", required="required", aria-label="HomePage URL")
+    p(class="form-row")
+      label HomePage Title
+      input(name="title", aria-label="HomePage Title",type="text")
+    p(class="form-row")
+      label
+        input(type="checkbox",name="view")
+        span JSON view
+    p(class="form-row")
+      input(type="submit")
+  script(src="//cdn.bootcss.com/validator/10.11.0/validator.min.js")
+  script(src='/javascripts/script.js')
