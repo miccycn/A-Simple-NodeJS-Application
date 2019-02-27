@@ -8,7 +8,7 @@ const {
 
 router.get('/', function (req, res, next) {
   res.render('index');
-})
+});
 
 router.post('/submit', [
   check('name').exists().isLength({
@@ -26,7 +26,7 @@ router.post('/submit', [
   if (!errors.isEmpty()) {
     return res.status(422).render('error', {
       errors: errors.array().map((item) => {
-        return item.msg
+        return item.msg;
       })
     });
   }
@@ -48,8 +48,6 @@ router.post('/submit', [
   } else {
     res.status(200).render('success', result.data);
   }
-
-  res.end();
-})
+});
 
 module.exports = router;
