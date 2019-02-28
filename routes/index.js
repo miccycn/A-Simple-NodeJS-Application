@@ -1,6 +1,10 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const crypto = require('crypto');
+// const http = require('http');
+const cheerio = require('cheerio');
+const request = require('request');
+const iconv = require('iconv-lite');
 const {
   check,
   validationResult
@@ -19,15 +23,14 @@ router.post('/submit', [
     min: 8,
     max: 16
   }).withMessage('Password must be 8-16 characters'),
-  check('url').exists().isURL().withMessage('Please input the correct homepage URL'),
-  check('title').isString(),
+  check('url').exists().isURL().withMessage('Please input the correct homepage URL')
 ], function (req, res) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).render('error', {
       errors: errors.array().map((item) => {
         return item.msg;
-      })
+      }).join(',')
     });
   }
   const md5sum = crypto.createHash('md5');
@@ -42,12 +45,33 @@ router.post('/submit', [
     }
   };
 
-  if (req.body.view) {
-    delete result.data.view;
-    return res.status(200).json(result);
-  } else {
-    res.status(200).render('success', result.data);
-  }
+  request({
+    url: req.body.url,
+    encoding: null
+  }, function (error, response, body) {
+    if (response && response.statusCode === 200) {
+      const $ = cheerio.load(body.toString());
+      let charset = 'UTF-8';
+      for (let i = 0; i < $("meta").length; i++) {
+        // console.log($("meta")[i].attribs);
+        if ($("meta")[i].attribs.charset) {
+          charset = $("meta")[i].attribs.charset;
+          break;
+        }
+      }
+      const html = iconv.decode(body, charset)
+      const $$ = cheerio.load(html, {
+        decodeEntities: false
+      });
+      result.data.title = $$('title').text();
+    }
+    if (req.body.view) {
+      delete result.data.view;
+      res.status(200).json(result);
+    } else {
+      res.status(200).render('success', result.data);
+    }
+  })
 });
 
 module.exports = router;
